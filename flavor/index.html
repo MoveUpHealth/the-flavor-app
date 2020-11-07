@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>flavor</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet_local" href="style.css" />
+    <link rel="stylesheet" href="uikit.min.css" />
+    <script src="uikit.min.js"></script>
+    <script src="uikit-icons.min.js"></script>
+  </head>
+  <body>
+    <div class="uk-position-relative">
+      <img src="./pasta_logo-2.jpg" alt="herobanner">
+      <div class="uk-position-top">
+        <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
+          <nav class="uk-navbar-container uk-navbar-transparent uk-light" uk-navbar>
+              <div class="uk-navbar-right">
+                  <ul class="uk-navbar-nav">
+                      <li class="uk-active"><a href="#">Home</a></li>
+                      <li><a href="#">myRestaurants</a></li>
+                      <li>
+                          <a href="#">myRecipes</a>
+                          <div class="uk-navbar-dropdown">
+                              <ul class="uk-nav uk-navbar-dropdown-nav">
+                                  <li class="uk-active"><a href="#">myMeals</a></li>
+                                  <li class="uk-active"><a href="#">myCocktails</a></li>
+
+                              </ul>
+                          </div>
+                      </li>
+                  </ul>
+              </div>
+          </nav>
+      </div>
+  </div>
+  
+    </div>
+    </div>
+    <div class="uk-section">
+      <div class="uk-container"></div>
+    </div>
+
+    <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+      <div class="uk-card-media-left uk-cover-container">
+          <img src="mealrecipe.jpg" alt="meal" uk-cover>
+          <canvas width="600" height="400"></canvas>
+      </div>
+          <div class="uk-card-body uk-flex uk-flex-middle uk-flex-column uk-flex-center">
+              <h3 class="uk-card-title">Add Meal Recipe</h3>
+              <button class="uk-button uk-button-default">Add Meal Recipe</button>
+          </div>
+  </div>
+  
+  <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+      <div class="uk-flex-last@s uk-card-media-right uk-cover-container">
+          <img src="cocktailrecipe.jpg" alt="cocktail" uk-cover>
+          <canvas width="600" height="400"></canvas>
+      </div>
+          <div class="uk-card-body uk-flex uk-flex-middle uk-flex-column uk-flex-center">
+              <h3 class="uk-card-title">Add Cocktail Recipe</h3>
+              <button class="uk-button uk-button-default">Add Cocktail Recipe</button>
+          </div>
+  </div>
+
+    <div class="uk-section">
+      <div class="uk-container"></div>
+    </div>
+    <div>
+      <div class="uk-background-contain uk-background-muted uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle" >
+          <p class="uk-h4">Find restaurants near me!</p>
+          <button class="uk-button uk-button-default">I'm Hungry!</button>
+      </div>
+  </div>
+</html>
