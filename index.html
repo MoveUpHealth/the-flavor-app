@@ -4,7 +4,7 @@
     <title>flavor</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet_local" href="style.css" />
+    <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="uikit.min.css" />
     <script src="uikit.min.js"></script>
     <script src="uikit-icons.min.js"></script>
@@ -48,10 +48,18 @@
       </div>
           <div class="uk-card-body uk-flex uk-flex-middle uk-flex-column uk-flex-center">
               <h3 class="uk-card-title">Add Meal Recipe</h3>
-              <button class="uk-button uk-button-default">Add Meal Recipe</button>
+              <button class="uk-button uk-button-default" id="myBtnMeal">Add Meal Recipe</button>
           </div>
   </div>
-  
+    <!-- The Modal -->
+<div id="myModalMeal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>Some text in the Modal..</p>
+    </div>
+</div>
   <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
       <div class="uk-flex-last@s uk-card-media-right uk-cover-container">
           <img src="cocktailrecipe.jpg" alt="cocktail" uk-cover>
@@ -59,17 +67,38 @@
       </div>
           <div class="uk-card-body uk-flex uk-flex-middle uk-flex-column uk-flex-center">
               <h3 class="uk-card-title">Add Cocktail Recipe</h3>
-              <button class="uk-button uk-button-default">Add Cocktail Recipe</button>
+              <button class="uk-button uk-button-default" id="myBtnCocktail">Add Cocktail Recipe</button>
           </div>
   </div>
+      <!-- The Modal -->
+<div id="myModalCocktail" class="modal">
 
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>Some text in the Modal..</p>
+    </div>
+</div>
     <div class="uk-section">
       <div class="uk-container"></div>
     </div>
     <div>
       <div class="uk-background-contain uk-background-muted uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle" >
           <p class="uk-h4">Find restaurants near me!</p>
-          <button class="uk-button uk-button-default">I'm Hungry!</button>
+          <button class="uk-button uk-button-default" id="myBtnRestaurant">I'm Hungry!</button>
       </div>
   </div>
+      <!-- The Modal -->
+<div id="myModalRestaurant" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>Some text in the Modal..</p>
+    </div>
+</div>
+  
+  </div>
+  <script src="./javascript.js" type="text/javascript"></script>
+  </body>
 </html>
