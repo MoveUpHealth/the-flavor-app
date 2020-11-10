@@ -1,38 +1,38 @@
-// var favoriteMeals = []
+var favoriteMeals = []
 
-// $('.btn-search').on('click', function(e){
-//  e.preventDefault()
-// var meal = $('#keywords').val()
-// var queryUrl = 'https://www.themealdb.com/api/json/v1/1/search.php?s='+ meal + '&api-key=1'
+$('.btn-search').on('click', function(e){
+ e.preventDefault()
+var meal = $('#keywords').val()
+var queryUrl = 'https://www.themealdb.com/api/json/v1/1/search.php?s='+ meal + '&api-key=1'
 
-// $.ajax({
-//  url: queryUrl,
-//  method: "GET"
-// }).then(function(response){
-//  console.log(response)
-//  var newDiv = $("<div>")
-//  var mealImage = $('<img>')
-//  var favIcon = $('<button><i class="far fa-heart"></i></button>')
-//  var mealId = response.meals[0].idMeal
-//  mealImage.attr('src', response.meals[0].strMealThumb)
-//  favIcon.attr('data-id', mealId)
-//  newDiv.append(mealImage)
-//  newDiv.append(favIcon)
-//  $('#search-results').append(newDiv)
+$.ajax({
+ url: queryUrl,
+ method: "GET"
+}).then(function(response){
+ console.log(response)
+ var newDiv = $("<div>")
+ var mealImage = $('<img>')
+ var favIcon = $('<button><i class="far fa-heart"></i></button>')
+ var mealId = response.meals[0].idMeal
+ mealImage.attr('src', response.meals[0].strMealThumb)
+ favIcon.attr('data-id', mealId)
+ newDiv.append(mealImage)
+ newDiv.append(favIcon)
+ $('#search-results').append(newDiv)
 
-//  $('.far').on('click', function(){
+ $('.far').on('click', function(){
 
-//      favIcon.attr('class', 'fas fa-heart')
-//      var favId = favIcon.attr('data-id')
-//      if(favoriteMeals.indexOf(favId) == '-1'){
-//      favoriteMeals.push(favId)
-//      console.log(favoriteMeals)
-//      }
-//  })
+     favIcon.attr('class', 'fas fa-heart')
+     var favId = favIcon.attr('data-id')
+     if(favoriteMeals.indexOf(favId) == '-1'){
+     favoriteMeals.push(favId)
+     console.log(favoriteMeals)
+     }
+ })
  
-// })
+})
  
-// }) 
+}) 
 
 // $('.btn-food').on('click', function(e){
 //  e.preventDefault()
