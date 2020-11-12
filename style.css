@@ -40,8 +40,18 @@ html {
 }
 
 .close:hover,
-.close:focus {
+.close:focus,
+.uk-icon {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+
+.uk-form-stacked .uk-form-label {
+  margin-top: 14px;
+}
+
+#search-results{
+  display: inline !important;
 }
