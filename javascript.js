@@ -2,10 +2,33 @@ var favoriteMeals = []
 var favoriteDrinks = []
 var favoriteRestaurants = []
 
+function init(){
+
+  if(localStorage.getItem('fav meals') !== null){
+   var savedMeals = JSON.parse(localStorage.getItem('fav meals')) 
+   for(var x = 0; x < savedMeals.length; x ++ ){
+    favoriteMeals.push(savedMeals[x])
+  }}
+  if(localStorage.getItem('fav drinks') !== null){
+    var savedDrinks = JSON.parse(localStorage.getItem('fav drinks'))
+    for(var x = 0; x < savedDrinks.length; x ++ ){
+    favoriteDrinks.push(savedDrinks[x])
+  }}
+  if(localStorage.getItem('fav restaurants') !== null){
+    var savedRestaurants = JSON.parse(localStorage.getItem('fav restaurants'))
+    for(var x = 0; x < savedRestaurants.length; x ++ ){
+    
+    favoriteRestaurants.push(savedRestaurants[x])
+  }}
+}
+
+init()
+
 
 //Button to search for meal
 $('.btn-meal').on('click', function(e){
  e.preventDefault()
+ 
  modalMeal.style.display = "none";
  $('#mealDiv').attr('style', 'display: none;')
  $('#cocktailDiv').attr('style', 'display: none;')
@@ -32,33 +55,37 @@ $.ajax({
 }).then(function(response){
  console.log(response)
  
- var searchTitle = $('<h1>'+ (response.meals.length) +' Results for ' + mealKeyword + '</h1>')
- $('#search-results').append(searchTitle)
-
-
 if(response.meals == null){
          var noResults = $("<h2>I'm sorry. We didn't find any results. Please start over.</h2>")
          $('#search-results').append(noResults)
      } else {
- for(var i = 0; i < response.meals.length; i++){
-     
- var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
- var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="mealView">'+ response.meals[i].strMeal + '</button>')
- var mealImage = $('<img>')
- var favIcon = $('<button uk-icon="icon: heart"></button>')
- var mealId = response.meals[i].idMeal
 
- mealImage.attr('src', response.meals[i].strMealThumb)
- newTitle.attr('data-id', mealId)
- favIcon.attr('data-id', mealId)
- favIcon.attr('style', 'display: block')
- favIcon.attr('class', 'uk-button uk-button-default uk-icon')
- newDiv.append(newTitle)
- newDiv.append(favIcon)
- newDiv.append(mealImage)
-  
- $('#search-results').append(newDiv)
- }}
+      //Search results
+      var searchTitle = $('<h1>'+ (response.meals.length) +' Results for ' + mealKeyword + '</h1>')
+      $('#search-results').append(searchTitle)
+        //Loop through results
+        for(var i = 0; i < response.meals.length; i++){
+            
+        var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
+        var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="mealView">'+ response.meals[i].strMeal + '</button>')
+        var mealImage = $('<img>')
+        var favIcon = $('<button uk-icon="icon: heart"></button>')
+        var mealId = response.meals[i].idMeal
+
+        mealImage.attr('src', response.meals[i].strMealThumb)
+        newTitle.attr('data-id', mealId)
+        favIcon.attr('data-id', mealId)
+        favIcon.attr('style', 'display: block')
+        favIcon.attr('class', 'uk-button uk-button-default uk-icon')
+        if (favoriteMeals.includes(mealId) == true){
+          favIcon.attr('style', 'color: red')
+        }
+        newDiv.append(newTitle)
+        newDiv.append(favIcon)
+        newDiv.append(mealImage)
+
+        $('#search-results').append(newDiv)
+        }}
  
 
  //Button to favorite meal
@@ -69,6 +96,7 @@ if(response.meals == null){
      var favId = favBtn.attr('data-id')
      if(favoriteMeals.indexOf(favId) == '-1'){
      favoriteMeals.push(favId)
+     localStorage.setItem('fav meals', JSON.stringify(favoriteMeals))
      console.log(favoriteMeals)
      }
  })
@@ -103,6 +131,9 @@ $.ajax({
   viewIcon.attr('data-id', viewId)
   viewIcon.attr('style', 'display: block')
   viewIcon.attr('class', 'uk-button uk-button-default uk-icon')
+  if (favoriteMeals.includes(viewId) == true){
+    viewIcon.attr('style', 'color: red')
+  }
   viewDiv.append(newTitle)
   viewDiv.append(viewIcon)
   viewDiv.append(mealImage)
@@ -168,6 +199,7 @@ $.ajax({
   var favId = favBtn.attr('data-id')
   if(favoriteMeals.indexOf(favId) == '-1'){
   favoriteMeals.push(favId)
+  localStorage.setItem('fav meals', JSON.stringify(favoriteMeals))
   console.log(favoriteMeals)
   }
 })
@@ -183,6 +215,7 @@ $.ajax({
 //Button to return random meal
 $('.btn-meal-random').on('click', function(e){
   e.preventDefault()
+  
   modalMeal.style.display = "none";
   $('#mealDiv').attr('style', 'display: none;')
   $('#cocktailDiv').attr('style', 'display: none;')
@@ -211,6 +244,9 @@ $('.btn-meal-random').on('click', function(e){
   favIcon.attr('data-id', mealId)
   favIcon.attr('style', 'display: block')
   favIcon.attr('class', 'uk-button uk-button-default uk-icon')
+  if (favoriteMeals.includes(mealId) == true){
+    favIcon.attr('style', 'color: red')
+  }
   newDiv.append(newTitle)
   newDiv.append(favIcon)
   newDiv.append(mealImage)
@@ -221,11 +257,13 @@ $('.btn-meal-random').on('click', function(e){
  
   //Button to favorite meal
   $('.uk-icon').on('click', function(){
- 
-      favIcon.attr('style', 'color: red')
-      var favId = favIcon.attr('data-id')
+    var favBtn = $(this)
+    console.log(favBtn)
+    favBtn.attr('style', 'color: red')
+    var favId = favBtn.attr('data-id')
       if(favoriteMeals.indexOf(favId) == '-1'){
       favoriteMeals.push(favId)
+      localStorage.setItem('fav meals', JSON.stringify(favoriteMeals))
       console.log(favoriteMeals)
       }
   })
@@ -261,6 +299,9 @@ $.ajax({
   viewIcon.attr('data-id', viewId)
   viewIcon.attr('style', 'display: block')
   viewIcon.attr('class', 'uk-button uk-button-default uk-icon')
+  if (favoriteMeals.includes(viewId) == true){
+    viewIcon.attr('style', 'color: red')
+  }
   viewDiv.append(newTitle)
   viewDiv.append(viewIcon)
   viewDiv.append(mealImage)
@@ -320,11 +361,13 @@ $.ajax({
 
   // Button to favorite meal
   $('.uk-icon').on('click', function(){
- 
-    favIcon.attr('style', 'color: red')
-    var favId = favIcon.attr('data-id')
+    var favBtn = $(this)
+    console.log(favBtn)
+    favBtn.attr('style', 'color: red')
+    var favId = favBtn.attr('data-id')
     if(favoriteMeals.indexOf(favId) == '-1'){
     favoriteMeals.push(favId)
+    localStorage.setItem('fav meals', JSON.stringify(favoriteMeals))
     console.log(favoriteMeals)
     }
 })
@@ -341,6 +384,7 @@ $.ajax({
 //Button to search drinks
 $('.btn-drink').on('click', function(e){
     e.preventDefault()
+    
     modalCocktail.style.display = "none";
     $('#mealDiv').attr('style', 'display: none;')
     $('#cocktailDiv').attr('style', 'display: none;')
@@ -357,14 +401,18 @@ $('.btn-drink').on('click', function(e){
     method: "GET"
    }).then(function(response){
     console.log(response)
-    var drinkTitle = $('<h1>'+ (response.drinks.length) + ' Results for ' + drink + '</h1>')
-    $('#search-results').append(drinkTitle)
+    
 
     if(response.drinks == null){
       var noResults = $("<h2>I'm sorry. We didn't find any results. Please start over.</h2>")
       $('#search-results').append(noResults)} else {
-    for(var i = 0; i < response.drinks.length; i++){
-    
+
+      //Search results
+      var drinkTitle = $('<h1>'+ (response.drinks.length) + ' Results for ' + drink + '</h1>')
+      $('#search-results').append(drinkTitle)
+      //Loop through results
+      for(var i = 0; i < response.drinks.length; i++){
+      
       var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
       var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="drinkView">'+ response.drinks[i].strDrink + '</button>')
       var drinkImage = $('<img>')
@@ -375,6 +423,9 @@ $('.btn-drink').on('click', function(e){
       favIcon.attr('data-id', drinkId)
       favIcon.attr('style', 'display: block')
       favIcon.attr('class', 'uk-button uk-button-default uk-icon')
+      if (favoriteDrinks.includes(drinkId) == true){
+        favIcon.attr('style', 'color: red')
+      }
       newDiv.append(newTitle)
       newDiv.append(favIcon)
       newDiv.append(drinkImage)
@@ -389,6 +440,7 @@ $('.btn-drink').on('click', function(e){
         var favId = favIcon.attr('data-id')
         if(favoriteDrinks.indexOf(favId) == '-1'){
         favoriteDrinks.push(favId)
+        localStorage.setItem('fav drinks', JSON.stringify(favoriteDrinks))
         console.log(favoriteDrinks)
         }
     }) 
@@ -424,6 +476,9 @@ $.ajax({
   viewIcon.attr('data-id', viewId)
   viewIcon.attr('style', 'display: block')
   viewIcon.attr('class', 'uk-button uk-button-default uk-icon')
+  if (favoriteDrinks.includes(viewId) == true){
+    viewIcon.attr('style', 'color: red')
+  }
   viewDiv.append(newTitle)
   viewDiv.append(viewIcon)
   viewDiv.append(drinkImage)
@@ -476,11 +531,13 @@ $.ajax({
 
   // Button to favorite drink
   $('.uk-icon').on('click', function(){
- 
-    favIcon.attr('style', 'color: red')
-    var favId = favIcon.attr('data-id')
+    var favBtn = $(this)
+    console.log(favBtn)
+    favBtn.attr('style', 'color: red')
+    var favId = favBtn.attr('data-id')
     if(favoriteDrinks.indexOf(favId) == '-1'){
     favoriteDrinks.push(favId)
+    localStorage.setItem('fav drinks', JSON.stringify(favoriteDrinks))
     console.log(favoriteDrinks)
     }
 })
@@ -497,6 +554,7 @@ $.ajax({
    //Button for random drink
    $('.btn-drink-random').on('click', function(e){
     e.preventDefault()
+    
     modalCocktail.style.display = "none";
     $('#mealDiv').attr('style', 'display: none;')
     $('#cocktailDiv').attr('style', 'display: none;')
@@ -521,18 +579,23 @@ $.ajax({
       favIcon.attr('data-id', drinkId)
       favIcon.attr('style', 'display: block')
       favIcon.attr('class', 'uk-button uk-button-default uk-icon')
+      if (favoriteDrinks.includes(drinkId) == true){
+        favIcon.attr('style', 'color: red')
+      }
       newDiv.append(newTitle)
       newDiv.append(favIcon)
       newDiv.append(drinkImage)
        
       $('#search-results').append(newDiv)
-   
+    //Button to favorite the drink
     $('.uk-icon').on('click', function(){
-   
-        favIcon.attr('style', 'color: red')
-        var favId = favIcon.attr('data-id')
+      var favBtn = $(this)
+      console.log(favBtn)
+      favBtn.attr('style', 'color: red')
+      var favId = favBtn.attr('data-id')
         if(favoriteDrinks.indexOf(favId) == '-1'){
         favoriteDrinks.push(favId)
+        localStorage.setItem('fav drinks', JSON.stringify(favoriteDrinks))
         console.log(favoriteDrinks)
         }
     })
@@ -568,6 +631,10 @@ $.ajax({
     viewIcon.attr('data-id', viewId)
     viewIcon.attr('style', 'display: block')
     viewIcon.attr('class', 'uk-button uk-button-default uk-icon')
+    if (favoriteDrinks.includes(viewId) == true){
+      
+      viewIcon.attr('style', 'color: red')
+    }
     viewDiv.append(newTitle)
     viewDiv.append(viewIcon)
     viewDiv.append(drinkImage)
@@ -630,11 +697,13 @@ $.ajax({
   
     // Button to favorite drink
     $('.uk-icon').on('click', function(){
-   
-      favIcon.attr('style', 'color: red')
-      var favId = favIcon.attr('data-id')
+      var favBtn = $(this)
+      console.log(favBtn)
+      favBtn.attr('style', 'color: red')
+      var favId = favBtn.attr('data-id')
       if(favoriteDrinks.indexOf(favId) == '-1'){
       favoriteDrinks.push(favId)
+      localStorage.setItem('fav drinks', JSON.stringify(favoriteDrinks))
       console.log(favoriteDrinks)
       }
   })
@@ -653,6 +722,7 @@ $.ajax({
 // Button for the restaurant search
 $('.btn-restaurant').on('click', function(e){
  e.preventDefault()
+ 
  modalRestaurant.style.display = "none";
  $('#mealDiv').attr('style', 'display: none;')
  $('#cocktailDiv').attr('style', 'display: none;')
@@ -681,55 +751,59 @@ $.ajax({
  method: "GET",
  headers: {'user-key': '8b3fec82b5d8fb68a801540078df89dc'}
 }).then(function(response){
- console.log(response.restaurants[0].restaurant.thumb)
+ console.log(response)
     
- var restaurantTitle = $('<h1>'+ (response.results_found) + ' Results for ' + restaurantKeyword + '</h1>')
- $('#search-results').append(restaurantTitle)
+ 
 
- if(response.restaurants == null){
+ if(response.results_found == '0'){
    var noResults = $("<h2>I'm sorry. We didn't find any results. Please start over.</h2>")
    $('#search-results').append(noResults)} else {
- for(var i = 0; i < response.restaurants.length; i++){
-   var result = response.restaurants[i].restaurant
-   var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
-   var newTitle = $('<h3 class="uk-card-title"><a href="'+ result.url + '" target="_blank">' + result.name + '</a></h3>')
-   var restaurantImage = $('<img>')
-   var favIcon = $('<button uk-icon="icon: heart"></button>')
-   var restaurantId = result.id
-   var thumbPic = result.thumbPic
-   
-   favIcon.attr('data-id', restaurantId)
-   favIcon.attr('style', 'display: block')
-   favIcon.attr('class', 'uk-button uk-button-default uk-icon')
-   newDiv.append(newTitle)
-   newDiv.append(favIcon)
-   if(thumbPic == ""){
-    restaurantImage.attr('src', './no_image.png') 
-    newDiv.append(restaurantImage)
-    } else{
-     restaurantImage.attr('src', result.thumb) 
-     newDiv.append(restaurantImage) 
-    }
-   
-    
-   $('#search-results').append(newDiv)
+
+    var restaurantTitle = $('<h1>'+ (response.results_found) + ' Results for ' + restaurantKeyword + '</h1>')
+    $('#search-results').append(restaurantTitle)
+    for(var i = 0; i < response.restaurants.length; i++){
+      var result = response.restaurants[i].restaurant
+      var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
+      var newTitle = $('<h3 class="uk-card-title"><a href="'+ result.url + '" target="_blank">' + result.name + '</a></h3>')
+      var restaurantImage = $('<img>')
+      var favIcon = $('<button uk-icon="icon: heart"></button>')
+      var restaurantId = result.id
+      var thumbPic = result.thumbPic
+      
+      favIcon.attr('data-id', restaurantId)
+      favIcon.attr('style', 'display: block')
+      favIcon.attr('class', 'uk-button uk-button-default uk-icon')
+      if (favoriteRestaurants.includes(restaurantId) == true){
+        console.log(restaurantId)
+        favIcon.attr('style', 'color: red')
+      }
+      newDiv.append(newTitle)
+      newDiv.append(favIcon)
+      if(thumbPic == ""){
+        restaurantImage.attr('src', './no_image.png') 
+        newDiv.append(restaurantImage)
+        } else{
+        restaurantImage.attr('src', result.thumb) 
+        newDiv.append(restaurantImage) 
+        }
+      
+        
+      $('#search-results').append(newDiv)
 
  }}
 
-
-
-
-
-
-    // $('.far').on('click', function(){
-
-    //     favIcon.attr('class', 'fas fa-heart')
-    //     var favId = favIcon.attr('data-id')
-    //     if(favoriteMeals.indexOf(favId) == '-1'){
-    //     favoriteMeals.push(favId)
-    //     console.log(favoriteMeals)
-    //     }
-    // })
+// Button to favorite restaurant
+$('.uk-icon').on('click', function(){
+  var favBtn = $(this)
+  console.log(favBtn)
+  favBtn.attr('style', 'color: red')
+  var favId = favBtn.attr('data-id')
+  if(favoriteRestaurants.indexOf(favId) == '-1'){
+  favoriteRestaurants.push(favId)
+  localStorage.setItem('fav restaurants', JSON.stringify(favoriteRestaurants))
+  console.log(favoriteRestaurants)
+  }
+})
  
 }) }})
  
