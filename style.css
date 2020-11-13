@@ -52,6 +52,12 @@ html {
   margin-top: 14px;
 }
 
-#search-results{
-  display: inline !important;
+
+p.ingredientList {
+  margin: 0 20px 0 20px;       
 }
+
+.ingrTitle{
+  margin-left: 20px;
+}
+
