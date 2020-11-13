@@ -32,7 +32,7 @@ $.ajax({
 }).then(function(response){
  console.log(response)
  
- var searchTitle = $('<h1>'+ (response.meals.length + 1) +' Results for ' + mealKeyword + '</h1>')
+ var searchTitle = $('<h1>'+ (response.meals.length) +' Results for ' + mealKeyword + '</h1>')
  $('#search-results').append(searchTitle)
 
 
@@ -357,7 +357,7 @@ $('.btn-drink').on('click', function(e){
     method: "GET"
    }).then(function(response){
     console.log(response)
-    var drinkTitle = $('<h1>'+ (response.drinks.length + 1) + ' Results for ' + drink + '</h1>')
+    var drinkTitle = $('<h1>'+ (response.drinks.length) + ' Results for ' + drink + '</h1>')
     $('#search-results').append(drinkTitle)
 
     if(response.drinks == null){
@@ -816,16 +816,9 @@ window.onclick = function(event) {
 // Get the modal for Full View
 var modalView = document.getElementById("myModalView");
 
-// Get the button that opens the modal
-var btn = document.getElementById("myBtnRestaurant");
-
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[3];
 
-// When the user clicks on the button, open the modal
-btn.onclick = function() {
-  
-}
 
 // When the user clicks on <span> (x), close the modal
 span.onclick = function() {
@@ -834,7 +827,7 @@ span.onclick = function() {
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modalRestaurant) {
+  if (event.target == modalView) {
     modalView.style.display = "none";
   }
 }
