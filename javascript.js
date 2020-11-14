@@ -2,6 +2,7 @@ var favoriteMeals = []
 var favoriteDrinks = []
 var favoriteRestaurants = []
 
+//INITIALIZING
 function init(){
 
   if(localStorage.getItem('fav meals') !== null){
@@ -23,9 +24,291 @@ function init(){
 }
 
 init()
+// END INITIALIZING
+
+// NAV HOME BUTTON
+$('#navHome').on('click', function(e){
+  e.preventDefault()
+  $('.titles').empty()
+  $('#search-results').empty()
+  $('#mealDiv').attr('style', 'display: flex;')
+  $('#cocktailDiv').attr('style', 'display: flex;')
+  $('#restaurantDiv').attr('style', 'display: flex;')
+})
+// END NAV HOME BUTTON
+
+//NAV MY RESTAURANT BUTTON
+$('#navRestaurant').on('click', function(e){
+  e.preventDefault()
+  $('.titles').empty()
+  $('#search-results').empty()
+  $('#mealDiv').attr('style', 'display: none;')
+  $('#cocktailDiv').attr('style', 'display: none;')
+  $('#restaurantDiv').attr('style', 'display: none;')
+
+    for(var x = 0; x < favoriteRestaurants.length; x ++ ){
+      var favUrl = 'https://developers.zomato.com/api/v2.1/restaurant?res_id=' + favoriteRestaurants[x]
+
+  $.ajax({
+    url: favUrl,
+    method: "GET",
+    headers: {'user-key': '8b3fec82b5d8fb68a801540078df89dc'}
+   }).then(function(fav){
+     console.log(fav)
+     
+     var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
+     var newTitle = $('<h3 class="uk-card-title"><a href="'+ fav.url + '" target="_blank">' + fav.name + '</a></h3>')
+     var restaurantImage = $('<img>')
+     var favIcon = $('<button uk-icon="icon: heart"></button>')
+     var restaurantId = fav.id
+     var thumbPic = fav.thumbPic
+     
+     favIcon.attr('data-id', restaurantId)
+     favIcon.attr('style', 'display: block')
+     favIcon.attr('class', 'uk-button uk-button-default uk-icon')
+     if (favoriteRestaurants.includes(restaurantId) == true){
+       console.log(restaurantId)
+       favIcon.attr('style', 'color: red')
+     }
+     newDiv.append(newTitle)
+     newDiv.append(favIcon)
+     if(thumbPic == ""){
+       restaurantImage.attr('src', './no_image.png') 
+       newDiv.append(restaurantImage)
+       } else{
+       restaurantImage.attr('src', fav.thumb) 
+       newDiv.append(restaurantImage) 
+       }
+     
+       
+     $('#search-results').append(newDiv)
+   
+  })}
+})
+// END NAV RESTAURANT BUTTON
+
+//NAV FAVORITE MEAL RECIPES
+$('#navMeals').on('click', function(e){
+  e.preventDefault()
+  $('.titles').empty()
+  $('#search-results').empty()
+  $('#mealDiv').attr('style', 'display: none;')
+  $('#cocktailDiv').attr('style', 'display: none;')
+  $('#restaurantDiv').attr('style', 'display: none;')
+
+  var deferredMeals = [] 
+ 
+  $.each(favoriteMeals, function(index) {
+  let queryUrl = 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=' + favoriteMeals[index] + '&api-key=1'
+  console.log(queryUrl)
+  deferredMeals.push(
+  $.ajax({
+    url: queryUrl,
+    method: "GET"
+   })
+   )
+  })
+    
+  $.when.apply($, deferredMeals).then(function (){
+    for(i = 0; i < deferredMeals.length; i++){
+    var result = deferredMeals[i].responseJSON.meals[0]
+    var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
+        var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="mealView">'+ result.strMeal + '</button>')
+        var mealImage = $('<img>')
+        var favIcon = $('<button uk-icon="icon: heart"></button>')
+        var mealId = result.idMeal
+
+        mealImage.attr('src', result.strMealThumb)
+        newTitle.attr('data-id', mealId)
+        favIcon.attr('data-id', mealId)
+        favIcon.attr('style', 'display: block')
+        favIcon.attr('class', 'uk-button uk-button-default uk-icon')
+        if (favoriteMeals.includes(mealId) == true){
+          favIcon.attr('style', 'color: red')
+        }
+        newDiv.append(newTitle)
+        newDiv.append(favIcon)
+        newDiv.append(mealImage)
+
+        $('#search-results').append(newDiv)
+     }
+
+      //Button to open full view
+      $('.mainTitle').on('click', function(b){
+        b.preventDefault()
+        $('#fullView').empty()
+        let viewBtn = $(this)
+      
+        modalView.style.display = "block";
+        console.log(viewBtn)
+        
+        let itemId = viewBtn.attr('data-id')
+        
+        
+         let viewUrl = 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=' + itemId + '&api-key=1'
+        console.log(viewUrl)
+        console.log(itemId)
+      
+      $.ajax({
+        url: viewUrl,
+        method: 'GET'
+      }).then(function(view){
+        console.log(view)
+        var result = view.meals[0]
+        var viewDiv = $("<div class='uk-card-media-left uk-cover-container'></div>")
+        var newTitle = $('<h3 class="uk-card-title">'+ result.strMeal + '</h3>')
+        var mealImage = $('<img>')
+        var viewIcon = $('<button uk-icon="icon: heart"></button>')
+        var viewId = result.idMeal
+       
+        mealImage.attr('src', result.strMealThumb)
+        viewIcon.attr('data-id', viewId)
+        viewIcon.attr('style', 'display: block')
+        viewIcon.attr('class', 'uk-button uk-button-default uk-icon')
+        if (favoriteMeals.includes(viewId) == true){
+          viewIcon.attr('style', 'color: red')
+        }
+        viewDiv.append(newTitle)
+        viewDiv.append(viewIcon)
+        viewDiv.append(mealImage)
+        $('#fullView').append(viewDiv)
+      
+        var ingrDiv = $('<div class="uk-cover-container uk-flex uk-flex-column">')
+        var ingrTitle = $('<h3 class="uk-card-title ingrTitle">Ingredient List</h3>')
+        ingrDiv.append(ingrTitle)
+
+    for (var i = 1; i <= 20; i++) {
+      var item = $('<p class="ingredientList">' + (result["strMeasure" + i] ? result["strMeasure" + i] : "") + ' ' + (result["strIngredient" + i] ? result["strIngredient" + i] : "") + '</p>');
+      ingrDiv.append(item);
+    }
+        
+        var dirTitle = $('<h3 class="uk-card-title ingrTitle">Directions</h3>')
+        ingrDiv.append(dirTitle)
+      
+        var directions = $('<p class="ingredientList">' + result.strInstructions + '</p>')
+        ingrDiv.append(directions)
+         
+        $('#fullView').append(ingrDiv)
+      
+      }) 
+      })
+  })
+  })
+// END NAV FAVORITE MEAL RECIPES
+
+//NAV FAVORITE DRINK RECIPES
+$('#navDrinks').on('click', function(e){
+  e.preventDefault()
+  $('.titles').empty()
+  $('#search-results').empty()
+  $('#mealDiv').attr('style', 'display: none;')
+  $('#cocktailDiv').attr('style', 'display: none;')
+  $('#restaurantDiv').attr('style', 'display: none;')
+
+  var deferredDrinks = [] 
+ 
+  $.each(favoriteDrinks, function(index) {
+  let queryUrl = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=' + favoriteDrinks[index] + '&api-key=1'
+  console.log(queryUrl)
+  deferredDrinks.push(
+  $.ajax({
+    url: queryUrl,
+    method: "GET"
+   })
+   )
+  })
+    
+  $.when.apply($, deferredDrinks).then(function (){
+    for(i = 0; i < deferredDrinks.length; i++){
+    var result = deferredDrinks[i].responseJSON.drinks[0]
+
+    var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
+      var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="drinkView">'+ result.strDrink + '</button>')
+      var drinkImage = $('<img>')
+      var favIcon = $('<button uk-icon="icon: heart"></button>')
+      var drinkId = result.idDrink
+      drinkImage.attr('src', result.strDrinkThumb)
+      newTitle.attr('data-id', drinkId)
+      favIcon.attr('data-id', drinkId)
+      favIcon.attr('style', 'display: block')
+      favIcon.attr('class', 'uk-button uk-button-default uk-icon')
+      if (favoriteDrinks.includes(drinkId) == true){
+        favIcon.attr('style', 'color: red')
+      }
+      newDiv.append(newTitle)
+      newDiv.append(favIcon)
+      newDiv.append(drinkImage)
+       
+      $('#search-results').append(newDiv)
+    }
+    
+  //Button to open full view
+ $('.mainTitle').on('click', function(b){
+  b.preventDefault()
+  $('#fullView').empty()
+  var viewBtn = $(this)
+
+  modalView.style.display = "block";
+  console.log(viewBtn)
+  
+  var itemId = viewBtn.attr('data-id')
+  var btnType = viewBtn.attr('data-type')
+  if( btnType == 'drinkView'){
+    queryUrl = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=' + itemId + '&api-key=1'
+  }
+
+$.ajax({
+  url: queryUrl,
+  method: 'GET'
+}).then(function(view){
+  console.log(view)
+  var result = view.drinks[0]
+  var viewDiv = $("<div class='uk-card-media-left uk-cover-container'></div>")
+  var newTitle = $('<h3 class="uk-card-title">'+ result.strDrink + '</h3>')
+  var drinkImage = $('<img>')
+  var viewIcon = $('<button uk-icon="icon: heart"></button>')
+  var viewId = result.idDrink
+ 
+  drinkImage.attr('src', result.strDrinkThumb)
+  viewIcon.attr('data-id', viewId)
+  viewIcon.attr('style', 'display: block')
+  viewIcon.attr('class', 'uk-button uk-button-default uk-icon')
+  if (favoriteDrinks.includes(viewId) == true){
+    viewIcon.attr('style', 'color: red')
+  }
+  viewDiv.append(newTitle)
+  viewDiv.append(viewIcon)
+  viewDiv.append(drinkImage)
+  $('#fullView').append(viewDiv)
+
+  var ingrDiv = $('<div class="uk-cover-container uk-flex uk-flex-column">')
+  var ingrTitle = $('<h3 class="uk-card-title ingrTitle">Ingredient List</h3>')
+
+  ingrDiv.append(ingrTitle)
+
+    for (var i = 1; i <= 15; i++) {
+      var item = $('<p class="ingredientList">' + (result["strMeasure" + i] ? result["strMeasure" + i] : "") + ' ' + (result["strIngredient" + i] ? result["strIngredient" + i] : "") + '</p>');
+      ingrDiv.append(item);
+    }
+  
+  
+  var dirTitle = $('<h3 class="uk-card-title ingrTitle">Directions</h3>')
+  ingrDiv.append(dirTitle)
+
+  var directions = $('<p class="ingredientList">' + result.strInstructions + '</p>')
+  ingrDiv.append(directions)
+   
+  $('#fullView').append(ingrDiv)
+  })
+})
+})
+})
 
 
-//Button to search for meal
+//END NAV FAVORITE DRINK RECIPES
+
+
+//BUTTON FOR MEAL SEARCH
 $('.btn-meal').on('click', function(e){
  e.preventDefault()
  
@@ -57,12 +340,12 @@ $.ajax({
  
 if(response.meals == null){
          var noResults = $("<h2>I'm sorry. We didn't find any results. Please start over.</h2>")
-         $('#search-results').append(noResults)
+         $('.titles').append(noResults)
      } else {
 
       //Search results
       var searchTitle = $('<h1>'+ (response.meals.length) +' Results for ' + mealKeyword + '</h1>')
-      $('#search-results').append(searchTitle)
+      $('.titles').append(searchTitle)
         //Loop through results
         for(var i = 0; i < response.meals.length; i++){
             
@@ -141,47 +424,12 @@ $.ajax({
 
   var ingrDiv = $('<div class="uk-cover-container uk-flex uk-flex-column">')
   var ingrTitle = $('<h3 class="uk-card-title ingrTitle">Ingredient List</h3>')
-  var item1 = $('<p class="ingredientList">' + result.strMeasure1 + ' ' + result.strIngredient1 + '</p>')
-  var item2 = $('<p class="ingredientList">' + result.strMeasure2 + ' ' + result.strIngredient2 + '</p>')
-  var item3 = $('<p class="ingredientList">' + result.strMeasure3 + ' ' + result.strIngredient3 + '</p>')
-  var item4 = $('<p class="ingredientList">' + result.strMeasure4 + ' ' + result.strIngredient4 + '</p>')
-  var item5 = $('<p class="ingredientList">' + result.strMeasure5 + ' ' + result.strIngredient5 + '</p>')
-  var item6 = $('<p class="ingredientList">' + result.strMeasure6 + ' ' + result.strIngredient6 + '</p>')
-  var item7 = $('<p class="ingredientList">' + result.strMeasure7 + ' ' + result.strIngredient7 + '</p>')
-  var item8 = $('<p class="ingredientList">' + result.strMeasure8 + ' ' + result.strIngredient8 + '</p>')
-  var item9 = $('<p class="ingredientList">' + result.strMeasure9 + ' ' + result.strIngredient9 + '</p>')
-  var item10 = $('<p class="ingredientList">' + result.strMeasure10 + ' ' + result.strIngredient10 + '</p>')
-  var item11 = $('<p class="ingredientList">' + result.strMeasure11 + ' ' + result.strIngredient11 + '</p>')
-  var item12 = $('<p class="ingredientList">' + result.strMeasure12 + ' ' + result.strIngredient12 + '</p>')
-  var item13 = $('<p class="ingredientList">' + result.strMeasure13 + ' ' + result.strIngredient13 + '</p>')
-  var item14 = $('<p class="ingredientList">' + result.strMeasure14 + ' ' + result.strIngredient14 + '</p>')
-  var item15 = $('<p class="ingredientList">' + result.strMeasure15 + ' ' + result.strIngredient15 + '</p>')
-  var item16 = $('<p class="ingredientList">' + result.strMeasure16 + ' ' + result.strIngredient16 + '</p>')
-  var item17 = $('<p class="ingredientList">' + result.strMeasure17 + ' ' + result.strIngredient17 + '</p>')
-  var item18 = $('<p class="ingredientList">' + result.strMeasure18 + ' ' + result.strIngredient18 + '</p>')
-  var item19 = $('<p class="ingredientList">' + result.strMeasure19 + ' ' + result.strIngredient19 + '</p>')
-  var item20 = $('<p class="ingredientList">' + result.strMeasure20 + ' ' + result.strIngredient20 + '</p>')
   ingrDiv.append(ingrTitle)
-  ingrDiv.append(item1)
-  ingrDiv.append(item2)
-  ingrDiv.append(item3)
-  ingrDiv.append(item4)
-  ingrDiv.append(item5)
-  ingrDiv.append(item6)
-  ingrDiv.append(item7)
-  ingrDiv.append(item8)
-  ingrDiv.append(item9)
-  ingrDiv.append(item10)
-  ingrDiv.append(item11)
-  ingrDiv.append(item12)
-  ingrDiv.append(item13)
-  ingrDiv.append(item14)
-  ingrDiv.append(item15)
-  ingrDiv.append(item16)
-  ingrDiv.append(item17)
-  ingrDiv.append(item18)
-  ingrDiv.append(item19)
-  ingrDiv.append(item20)
+
+    for (var i = 1; i <= 20; i++) {
+      var item = $('<p class="ingredientList">' + (result["strMeasure" + i] ? result["strMeasure" + i] : "") + ' ' + (result["strIngredient" + i] ? result["strIngredient" + i] : "") + '</p>');
+      ingrDiv.append(item);
+    }
   
   var dirTitle = $('<h3 class="uk-card-title ingrTitle">Directions</h3>')
   ingrDiv.append(dirTitle)
@@ -203,16 +451,15 @@ $.ajax({
   console.log(favoriteMeals)
   }
 })
-
 })
 })
 })
 }) 
+// END BUTTON FOR MEAL SEARCH
 
 
 
-
-//Button to return random meal
+//BUTTON FOR RANDOM MEAL SEARCH
 $('.btn-meal-random').on('click', function(e){
   e.preventDefault()
   
@@ -230,7 +477,7 @@ $('.btn-meal-random').on('click', function(e){
   console.log(response)
   
   var searchTitle = $('<h1>Variety is the spice of life. Enjoy...</h1>')
-  $('#search-results').append(searchTitle)
+  $('.titles').append(searchTitle)
  
       
   var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
@@ -307,49 +554,17 @@ $.ajax({
   viewDiv.append(mealImage)
   $('#fullView').append(viewDiv)
 
+  
+
   var ingrDiv = $('<div class="uk-cover-container uk-flex uk-flex-column">')
   var ingrTitle = $('<h3 class="uk-card-title ingrTitle">Ingredient List</h3>')
-  var item1 = $('<p class="ingredientList">' + result.strMeasure1 + ' ' + result.strIngredient1 + '</p>')
-  var item2 = $('<p class="ingredientList">' + result.strMeasure2 + ' ' + result.strIngredient2 + '</p>')
-  var item3 = $('<p class="ingredientList">' + result.strMeasure3 + ' ' + result.strIngredient3 + '</p>')
-  var item4 = $('<p class="ingredientList">' + result.strMeasure4 + ' ' + result.strIngredient4 + '</p>')
-  var item5 = $('<p class="ingredientList">' + result.strMeasure5 + ' ' + result.strIngredient5 + '</p>')
-  var item6 = $('<p class="ingredientList">' + result.strMeasure6 + ' ' + result.strIngredient6 + '</p>')
-  var item7 = $('<p class="ingredientList">' + result.strMeasure7 + ' ' + result.strIngredient7 + '</p>')
-  var item8 = $('<p class="ingredientList">' + result.strMeasure8 + ' ' + result.strIngredient8 + '</p>')
-  var item9 = $('<p class="ingredientList">' + result.strMeasure9 + ' ' + result.strIngredient9 + '</p>')
-  var item10 = $('<p class="ingredientList">' + result.strMeasure10 + ' ' + result.strIngredient10 + '</p>')
-  var item11 = $('<p class="ingredientList">' + result.strMeasure11 + ' ' + result.strIngredient11 + '</p>')
-  var item12 = $('<p class="ingredientList">' + result.strMeasure12 + ' ' + result.strIngredient12 + '</p>')
-  var item13 = $('<p class="ingredientList">' + result.strMeasure13 + ' ' + result.strIngredient13 + '</p>')
-  var item14 = $('<p class="ingredientList">' + result.strMeasure14 + ' ' + result.strIngredient14 + '</p>')
-  var item15 = $('<p class="ingredientList">' + result.strMeasure15 + ' ' + result.strIngredient15 + '</p>')
-  var item16 = $('<p class="ingredientList">' + result.strMeasure16 + ' ' + result.strIngredient16 + '</p>')
-  var item17 = $('<p class="ingredientList">' + result.strMeasure17 + ' ' + result.strIngredient17 + '</p>')
-  var item18 = $('<p class="ingredientList">' + result.strMeasure18 + ' ' + result.strIngredient18 + '</p>')
-  var item19 = $('<p class="ingredientList">' + result.strMeasure19 + ' ' + result.strIngredient19 + '</p>')
-  var item20 = $('<p class="ingredientList">' + result.strMeasure20 + ' ' + result.strIngredient20 + '</p>')
   ingrDiv.append(ingrTitle)
-  ingrDiv.append(item1)
-  ingrDiv.append(item2)
-  ingrDiv.append(item3)
-  ingrDiv.append(item4)
-  ingrDiv.append(item5)
-  ingrDiv.append(item6)
-  ingrDiv.append(item7)
-  ingrDiv.append(item8)
-  ingrDiv.append(item9)
-  ingrDiv.append(item10)
-  ingrDiv.append(item11)
-  ingrDiv.append(item12)
-  ingrDiv.append(item13)
-  ingrDiv.append(item14)
-  ingrDiv.append(item15)
-  ingrDiv.append(item16)
-  ingrDiv.append(item17)
-  ingrDiv.append(item18)
-  ingrDiv.append(item19)
-  ingrDiv.append(item20)
+
+    for (var i = 1; i <= 20; i++) {
+      var item = $('<p class="ingredientList">' + (result["strMeasure" + i] ? result["strMeasure" + i] : "") + ' ' + (result["strIngredient" + i] ? result["strIngredient" + i] : "") + '</p>');
+      ingrDiv.append(item);
+    }
+  
   
   var dirTitle = $('<h3 class="uk-card-title ingrTitle">Directions</h3>')
   ingrDiv.append(dirTitle)
@@ -377,11 +592,11 @@ $.ajax({
 })
  }) 
  }) 
+// END BUTTON FOR RANDOM MEAL SEARCH
 
 
 
-
-//Button to search drinks
+//BUTTON FOR DRINK SEARCH
 $('.btn-drink').on('click', function(e){
     e.preventDefault()
     
@@ -405,11 +620,11 @@ $('.btn-drink').on('click', function(e){
 
     if(response.drinks == null){
       var noResults = $("<h2>I'm sorry. We didn't find any results. Please start over.</h2>")
-      $('#search-results').append(noResults)} else {
+      $('.titles').append(noResults)} else {
 
       //Search results
       var drinkTitle = $('<h1>'+ (response.drinks.length) + ' Results for ' + drink + '</h1>')
-      $('#search-results').append(drinkTitle)
+      $('.titles').append(drinkTitle)
       //Loop through results
       for(var i = 0; i < response.drinks.length; i++){
       
@@ -487,38 +702,12 @@ $.ajax({
   var ingrDiv = $('<div class="uk-cover-container uk-flex uk-flex-column">')
   var ingrTitle = $('<h3 class="uk-card-title ingrTitle">Ingredient List</h3>')
 
-  var item1 = $('<p class="ingredientList">' + result.strMeasure1 + ' ' + result.strIngredient1 + '</p>')
-  var item2 = $('<p class="ingredientList">' + result.strMeasure2 + ' ' + result.strIngredient2 + '</p>')
-  var item3 = $('<p class="ingredientList">' + result.strMeasure3 + ' ' + result.strIngredient3 + '</p>')
-  var item4 = $('<p class="ingredientList">' + result.strMeasure4 + ' ' + result.strIngredient4 + '</p>')
-  var item5 = $('<p class="ingredientList">' + result.strMeasure5 + ' ' + result.strIngredient5 + '</p>')
-  var item6 = $('<p class="ingredientList">' + result.strMeasure6 + ' ' + result.strIngredient6 + '</p>')
-  var item7 = $('<p class="ingredientList">' + result.strMeasure7 + ' ' + result.strIngredient7 + '</p>')
-  var item8 = $('<p class="ingredientList">' + result.strMeasure8 + ' ' + result.strIngredient8 + '</p>')
-  var item9 = $('<p class="ingredientList">' + result.strMeasure9 + ' ' + result.strIngredient9 + '</p>')
-  var item10 = $('<p class="ingredientList">' + result.strMeasure10 + ' ' + result.strIngredient10 + '</p>')
-  var item11 = $('<p class="ingredientList">' + result.strMeasure11 + ' ' + result.strIngredient11 + '</p>')
-  var item12 = $('<p class="ingredientList">' + result.strMeasure12 + ' ' + result.strIngredient12 + '</p>')
-  var item13 = $('<p class="ingredientList">' + result.strMeasure13 + ' ' + result.strIngredient13 + '</p>')
-  var item14 = $('<p class="ingredientList">' + result.strMeasure14 + ' ' + result.strIngredient14 + '</p>')
-  var item15 = $('<p class="ingredientList">' + result.strMeasure15 + ' ' + result.strIngredient15 + '</p>')
-  
   ingrDiv.append(ingrTitle)
-  ingrDiv.append(item1)
-  ingrDiv.append(item2)
-  ingrDiv.append(item3)
-  ingrDiv.append(item4)
-  ingrDiv.append(item5)
-  ingrDiv.append(item6)
-  ingrDiv.append(item7)
-  ingrDiv.append(item8)
-  ingrDiv.append(item9)
-  ingrDiv.append(item10)
-  ingrDiv.append(item11)
-  ingrDiv.append(item12)
-  ingrDiv.append(item13)
-  ingrDiv.append(item14)
-  ingrDiv.append(item15)
+
+    for (var i = 1; i <= 15; i++) {
+      var item = $('<p class="ingredientList">' + (result["strMeasure" + i] ? result["strMeasure" + i] : "") + ' ' + (result["strIngredient" + i] ? result["strIngredient" + i] : "") + '</p>');
+      ingrDiv.append(item);
+    }
   
   
   var dirTitle = $('<h3 class="uk-card-title ingrTitle">Directions</h3>')
@@ -548,10 +737,10 @@ $.ajax({
 
    })
    }) 
+// END BUTTON FOR DRINK SEARCH
 
 
-
-   //Button for random drink
+   //BUTTON FOR RANDOM DRINK SEARCH
    $('.btn-drink-random').on('click', function(e){
     e.preventDefault()
     
@@ -568,7 +757,7 @@ $.ajax({
    }).then(function(response){
     console.log(response)
     var drinkTitle = $('<h1>Variety is the spice of life. Enjoy...</h1>')
-    $('#search-results').append(drinkTitle)  
+    $('.titles').append(drinkTitle)  
       var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
       var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="drinkView">'+ response.drinks[0].strDrink + '</button>')
       var drinkImage = $('<img>')
@@ -642,49 +831,13 @@ $.ajax({
   
     var ingrDiv = $('<div class="uk-cover-container uk-flex uk-flex-column">')
     var ingrTitle = $('<h3 class="uk-card-title ingrTitle">Ingredient List</h3>')
-  
-    var item1 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure1 + '</span>' + ' ' + '<span class="check">' + result.strIngredient1 + '</span>' + '</p>')
-    var item2 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure2 + '</span>' + ' ' + '<span class="check">' + result.strIngredient2 + '</span>' + '</p>')
-    var item3 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure3 + '</span>' + ' ' + '<span class="check">' + result.strIngredient3 + '</span>' + '</p>')
-    var item4 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure4 + '</span>' + ' ' + '<span class="check">' + result.strIngredient4 + '</span>' + '</p>')
-    var item5 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure5 + '</span>' + ' ' + '<span class="check">' + result.strIngredient5 + '</span>' + '</p>')
-    var item6 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure6 + '</span>' + ' ' + '<span class="check">' + result.strIngredient6 + '</span>' + '</p>')
-    var item7 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure7 + '</span>' + ' ' + '<span class="check">' + result.strIngredient7 + '</span>' + '</p>')
-    var item8 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure8 + '</span>' + ' ' + '<span class="check">' + result.strIngredient8 + '</span>' + '</p>')
-    var item9 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure9 + '</span>' + ' ' + '<span class="check">' + result.strIngredient9 + '</span>' + '</p>')
-    var item10 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure10 + '</span>' + ' ' + '<span class="check">' + result.strIngredient10 + '</span>' + '</p>')
-    var item11 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure11 + '</span>' + ' ' + '<span class="check">' + result.strIngredient11 + '</span>' + '</p>')
-    var item12 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure12 + '</span>' + ' ' + '<span class="check">' + result.strIngredient12 + '</span>' + '</p>')
-    var item13 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure13 + '</span>' + ' ' + '<span class="check">' + result.strIngredient13 + '</span>' + '</p>')
-    var item14 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure14 + '</span>' + ' ' + '<span class="check">' + result.strIngredient14 + '</span>' + '</p>')
-    var item15 = $('<p class="ingredientList">' + '<span class="check">' + result.strMeasure15 + '</span>' + ' ' + '<span class="check">' + result.strIngredient15 + '</span>' + '</p>')
-    
+
     ingrDiv.append(ingrTitle)
 
-    var nullCheck = $('span.check')
-    for(var x = 0; x < nullCheck.length; x ++){
-      var content = nullCheck[x].text()
-      if(content == 'null'){
-        nullCheck[x].text('')
-      }
+    for (var i = 1; i <= 15; i++) {
+      var item = $('<p class="ingredientList">' + (result["strMeasure" + i] ? result["strMeasure" + i] : "") + ' ' + (result["strIngredient" + i] ? result["strIngredient" + i] : "") + '</p>');
+      ingrDiv.append(item);
     }
-
-    
-    ingrDiv.append(item1)
-    ingrDiv.append(item2)
-    ingrDiv.append(item3)
-    ingrDiv.append(item4)
-    ingrDiv.append(item5)
-    ingrDiv.append(item6)
-    ingrDiv.append(item7)
-    ingrDiv.append(item8)
-    ingrDiv.append(item9)
-    ingrDiv.append(item10)
-    ingrDiv.append(item11)
-    ingrDiv.append(item12)
-    ingrDiv.append(item13)
-    ingrDiv.append(item14)
-    ingrDiv.append(item15)
     
     
     var dirTitle = $('<h3 class="uk-card-title ingrTitle">Directions</h3>')
@@ -716,10 +869,10 @@ $.ajax({
    })
     
    }) 
-   
+// END BUTTON FOR RANDOM DRINK SEARCH   
 
 
-// Button for the restaurant search
+//BUTTON FOR RESTAURANT SEARCH
 $('.btn-restaurant').on('click', function(e){
  e.preventDefault()
  
@@ -740,7 +893,7 @@ $.ajax({
   var entityType = loc.location_suggestions[0].entity_type
   if(entityId == null){
       var noLocation = $("<h2>I'm sorry. We didn't recognize that location. Please start over.</h2>")
-      $('#search-results').append(noLocation)
+      $('.titles').append(noLocation)
   } else {
 
 var queryUrl = 'https://developers.zomato.com/api/v2.1/search?entity_id='+ entityId +'&entity_type='+ entityType +'&q='+ restaurantKeyword
@@ -757,10 +910,10 @@ $.ajax({
 
  if(response.results_found == '0'){
    var noResults = $("<h2>I'm sorry. We didn't find any results. Please start over.</h2>")
-   $('#search-results').append(noResults)} else {
+   $('.titles').append(noResults)} else {
 
     var restaurantTitle = $('<h1>'+ (response.results_found) + ' Results for ' + restaurantKeyword + '</h1>')
-    $('#search-results').append(restaurantTitle)
+    $('.titles').append(restaurantTitle)
     for(var i = 0; i < response.restaurants.length; i++){
       var result = response.restaurants[i].restaurant
       var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
@@ -808,6 +961,9 @@ $('.uk-icon').on('click', function(){
 }) }})
  
 }) 
+// END BUTTON FOR MEAL SEARCH
+
+// BEGIN MODAL FUNCTIONALITY
 
 // Get the modal for Meals
 var modalMeal = document.getElementById("myModalMeal");
@@ -821,6 +977,7 @@ var span = document.getElementsByClassName("close")[0];
 // When the user clicks on the button, open the modal
 btn.onclick = function() {
   modalMeal.style.display = "block";
+  $('#mealKeyword').val('')
 }
 
 // When the user clicks on <span> (x), close the modal
@@ -847,6 +1004,7 @@ var span = document.getElementsByClassName("close")[1];
 // When the user clicks on the button, open the modal
 btn.onclick = function() {
   modalCocktail.style.display = "block";
+  $('#drinkKeyword').val('')
 }
 
 // When the user clicks on <span> (x), close the modal
@@ -873,6 +1031,8 @@ var span = document.getElementsByClassName("close")[2];
 // When the user clicks on the button, open the modal
 btn.onclick = function() {
   modalRestaurant.style.display = "block";
+  $('#restaurantKeyword').val('')
+  $('#city').val('')
 }
 
 // When the user clicks on <span> (x), close the modal
@@ -906,3 +1066,4 @@ window.onclick = function(event) {
   }
 }
 
+// END MODAL FUNCTIONALITY
