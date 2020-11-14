@@ -21,14 +21,14 @@
           <nav class="uk-navbar-container uk-navbar-transparent uk-light" uk-navbar>
               <div class="uk-navbar-right">
                   <ul class="uk-navbar-nav">
-                      <li class="uk-active"><a href="#">Home</a></li>
-                      <li><a href="#">myRestaurants</a></li>
+                      <li class="uk-active"><button class="uk-button uk-button-default navBtn" id='navHome'>Home</button></li>
+                      <li><button class="uk-button uk-button-default navBtnt" id="navRestaurant">myRestaurants</button></li>
                       <li>
-                          <a href="#">myRecipes</a>
+                          <button class="uk-button uk-button-default navBtn" id="navRecipes">myRecipes</button>
                           <div class="uk-navbar-dropdown">
                               <ul class="uk-nav uk-navbar-dropdown-nav">
-                                  <li class="uk-active"><a href="#">myMeals</a></li>
-                                  <li class="uk-active"><a href="#">myCocktails</a></li>
+                                  <li class="uk-active"><button class="uk-button navBtn" id="navMeals">myMeals</button></li>
+                                  <li class="uk-active"><button class="uk-button navBtn" id="navDrinks">myCocktails</button></li>
 
                               </ul>
                           </div>
@@ -41,7 +41,7 @@
     </div>
   
     <div class="uk-section">
-      <div class="uk-container"></div>
+      <div class="uk-container titles"></div>
     </div>
 
     <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid id='mealDiv'>
@@ -117,7 +117,7 @@
     </div>
     <div>
       <div class="uk-background-contain uk-background-muted uk-height-medium uk-panel uk-flex uk-flex-center uk-flex-middle" id='restaurantDiv'>
-          <p class="uk-h4">Find restaurants near me!</p>
+          <p class="uk-h4" style="margin-top: 15px;">Find restaurants near me! &nbsp;</p>
           <button class="uk-button uk-button-default" id="myBtnRestaurant">I'm Hungry!</button>
       </div>
   </div>
