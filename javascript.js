@@ -45,6 +45,8 @@ $('#navRestaurant').on('click', function(e){
   $('#mealDiv').attr('style', 'display: none;')
   $('#cocktailDiv').attr('style', 'display: none;')
   $('#restaurantDiv').attr('style', 'display: none;')
+  var pageTitle = $('<h1>Here are all of your favorite restaurants!</h1>')
+      $('.titles').append(pageTitle)
 
     for(var x = 0; x < favoriteRestaurants.length; x ++ ){
       var favUrl = 'https://developers.zomato.com/api/v2.1/restaurant?res_id=' + favoriteRestaurants[x]
@@ -95,6 +97,8 @@ $('#navMeals').on('click', function(e){
   $('#mealDiv').attr('style', 'display: none;')
   $('#cocktailDiv').attr('style', 'display: none;')
   $('#restaurantDiv').attr('style', 'display: none;')
+  var pageTitle = $('<h1>Here are all of your favorite meals!</h1>')
+      $('.titles').append(pageTitle)
 
   var deferredMeals = [] 
  
@@ -204,7 +208,8 @@ $('#navDrinks').on('click', function(e){
   $('#mealDiv').attr('style', 'display: none;')
   $('#cocktailDiv').attr('style', 'display: none;')
   $('#restaurantDiv').attr('style', 'display: none;')
-
+  var pageTitle = $('<h1>Here are all of your favorite drinks!</h1>')
+      $('.titles').append(pageTitle)
   var deferredDrinks = [] 
  
   $.each(favoriteDrinks, function(index) {
@@ -327,10 +332,7 @@ var queryUrl = 'https://www.themealdb.com/api/json/v1/1/filter.php?i=' + mealKey
 
 var queryUrl = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=' + mealKeyword + '&api-key=1'} else if (option == 'Area'){
 
-  var queryUrl = 'https://www.themealdb.com/api/json/v1/1/filter.php?a=' + mealKeyword + '&api-key=1'}
-
-console.log(queryUrl)
-console.log(option)
+var queryUrl = 'https://www.themealdb.com/api/json/v1/1/filter.php?a=' + mealKeyword + '&api-key=1'}
 
 $.ajax({
  url: queryUrl,
@@ -347,7 +349,7 @@ if(response.meals == null){
       var searchTitle = $('<h1>'+ (response.meals.length) +' Results for ' + mealKeyword + '</h1>')
       $('.titles').append(searchTitle)
         //Loop through results
-        for(var i = 0; i < response.meals.length; i++){
+        for(var i = 0; i < 21; i++){
             
         var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
         var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="mealView">'+ response.meals[i].strMeal + '</button>')
@@ -480,7 +482,7 @@ $('.btn-meal-random').on('click', function(e){
   $('.titles').append(searchTitle)
  
       
-  var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
+  var newDiv = $("<div class='uk-card uk-card-default uk-card-body random'></div>")
   var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="mealView">'+ response.meals[0].strMeal + '</button>')
   var mealImage = $('<img>')
   var favIcon = $('<button uk-icon="icon: heart"></button>')
@@ -626,7 +628,7 @@ $('.btn-drink').on('click', function(e){
       var drinkTitle = $('<h1>'+ (response.drinks.length) + ' Results for ' + drink + '</h1>')
       $('.titles').append(drinkTitle)
       //Loop through results
-      for(var i = 0; i < response.drinks.length; i++){
+      for(var i = 0; i < 21; i++){
       
       var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
       var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="drinkView">'+ response.drinks[i].strDrink + '</button>')
@@ -758,7 +760,7 @@ $.ajax({
     console.log(response)
     var drinkTitle = $('<h1>Variety is the spice of life. Enjoy...</h1>')
     $('.titles').append(drinkTitle)  
-      var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
+      var newDiv = $("<div class='uk-card uk-card-default uk-card-body random'></div>")
       var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="drinkView">'+ response.drinks[0].strDrink + '</button>')
       var drinkImage = $('<img>')
       var favIcon = $('<button uk-icon="icon: heart"></button>')
