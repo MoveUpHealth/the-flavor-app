@@ -56,7 +56,7 @@ $('#navRestaurant').on('click', function(e){
     method: "GET",
     headers: {'user-key': '8b3fec82b5d8fb68a801540078df89dc'}
    }).then(function(fav){
-     console.log(fav)
+     
      
      var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
      var newTitle = $('<h3 class="uk-card-title"><a href="'+ fav.url + '" target="_blank">' + fav.name + '</a></h3>')
@@ -69,7 +69,7 @@ $('#navRestaurant').on('click', function(e){
      favIcon.attr('style', 'display: block')
      favIcon.attr('class', 'uk-button uk-button-default uk-icon')
      if (favoriteRestaurants.includes(restaurantId) == true){
-       console.log(restaurantId)
+       
        favIcon.attr('style', 'color: red')
      }
      newDiv.append(newTitle)
@@ -104,7 +104,7 @@ $('#navMeals').on('click', function(e){
  
   $.each(favoriteMeals, function(index) {
   let queryUrl = 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=' + favoriteMeals[index] + '&api-key=1'
-  console.log(queryUrl)
+  
   deferredMeals.push(
   $.ajax({
     url: queryUrl,
@@ -144,20 +144,15 @@ $('#navMeals').on('click', function(e){
         let viewBtn = $(this)
       
         modalView.style.display = "block";
-        console.log(viewBtn)
-        
+                
         let itemId = viewBtn.attr('data-id')
-        
-        
-         let viewUrl = 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=' + itemId + '&api-key=1'
-        console.log(viewUrl)
-        console.log(itemId)
+        let viewUrl = 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=' + itemId + '&api-key=1'
       
       $.ajax({
         url: viewUrl,
         method: 'GET'
       }).then(function(view){
-        console.log(view)
+        
         var result = view.meals[0]
         var viewDiv = $("<div class='uk-card-media-left uk-cover-container'></div>")
         var newTitle = $('<h3 class="uk-card-title">'+ result.strMeal + '</h3>')
@@ -214,7 +209,7 @@ $('#navDrinks').on('click', function(e){
  
   $.each(favoriteDrinks, function(index) {
   let queryUrl = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=' + favoriteDrinks[index] + '&api-key=1'
-  console.log(queryUrl)
+  
   deferredDrinks.push(
   $.ajax({
     url: queryUrl,
@@ -254,7 +249,6 @@ $('#navDrinks').on('click', function(e){
   var viewBtn = $(this)
 
   modalView.style.display = "block";
-  console.log(viewBtn)
   
   var itemId = viewBtn.attr('data-id')
   var btnType = viewBtn.attr('data-type')
@@ -266,7 +260,7 @@ $.ajax({
   url: queryUrl,
   method: 'GET'
 }).then(function(view){
-  console.log(view)
+  
   var result = view.drinks[0]
   var viewDiv = $("<div class='uk-card-media-left uk-cover-container'></div>")
   var newTitle = $('<h3 class="uk-card-title">'+ result.strDrink + '</h3>')
@@ -338,7 +332,7 @@ $.ajax({
  url: queryUrl,
  method: "GET"
 }).then(function(response){
- console.log(response)
+ 
  
 if(response.meals == null){
          var noResults = $("<h2>I'm sorry. We didn't find any results. Please start over.</h2>")
@@ -349,7 +343,7 @@ if(response.meals == null){
       var searchTitle = $('<h1>'+ (response.meals.length) +' Results for ' + mealKeyword + '</h1>')
       $('.titles').append(searchTitle)
         //Loop through results
-        for(var i = 0; i < 21; i++){
+        for(var i = 0; i < response.meals.length; i++){
             
         var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
         var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="mealView">'+ response.meals[i].strMeal + '</button>')
@@ -376,13 +370,13 @@ if(response.meals == null){
  //Button to favorite meal
  $('.uk-icon').on('click', function(e){
      var favBtn = $(this)
-     console.log(favBtn)
+     
      favBtn.attr('style', 'color: red')
      var favId = favBtn.attr('data-id')
      if(favoriteMeals.indexOf(favId) == '-1'){
      favoriteMeals.push(favId)
      localStorage.setItem('fav meals', JSON.stringify(favoriteMeals))
-     console.log(favoriteMeals)
+     
      }
  })
  //Button to open full view
@@ -392,7 +386,7 @@ if(response.meals == null){
   var viewBtn = $(this)
 
   modalView.style.display = "block";
-  console.log(viewBtn)
+  
   
   var itemId = viewBtn.attr('data-id')
   var btnType = viewBtn.attr('data-type')
@@ -404,7 +398,7 @@ $.ajax({
   url: queryUrl,
   method: 'GET'
 }).then(function(view){
-  console.log(view)
+  
   var result = view.meals[0]
   var viewDiv = $("<div class='uk-card-media-left uk-cover-container'></div>")
   var newTitle = $('<h3 class="uk-card-title">'+ result.strMeal + '</h3>')
@@ -444,13 +438,13 @@ $.ajax({
    //Button to favorite meal
  $('.uk-icon').on('click', function(e){
   var favBtn = $(this)
-  console.log(favBtn)
+  
   favBtn.attr('style', 'color: red')
   var favId = favBtn.attr('data-id')
   if(favoriteMeals.indexOf(favId) == '-1'){
   favoriteMeals.push(favId)
   localStorage.setItem('fav meals', JSON.stringify(favoriteMeals))
-  console.log(favoriteMeals)
+  
   }
 })
 })
@@ -476,12 +470,10 @@ $('.btn-meal-random').on('click', function(e){
   url: queryUrl,
   method: "GET"
  }).then(function(response){
-  console.log(response)
   
   var searchTitle = $('<h1>Variety is the spice of life. Enjoy...</h1>')
   $('.titles').append(searchTitle)
- 
-      
+    
   var newDiv = $("<div class='uk-card uk-card-default uk-card-body random'></div>")
   var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="mealView">'+ response.meals[0].strMeal + '</button>')
   var mealImage = $('<img>')
@@ -507,13 +499,12 @@ $('.btn-meal-random').on('click', function(e){
   //Button to favorite meal
   $('.uk-icon').on('click', function(){
     var favBtn = $(this)
-    console.log(favBtn)
+    
     favBtn.attr('style', 'color: red')
     var favId = favBtn.attr('data-id')
       if(favoriteMeals.indexOf(favId) == '-1'){
       favoriteMeals.push(favId)
       localStorage.setItem('fav meals', JSON.stringify(favoriteMeals))
-      console.log(favoriteMeals)
       }
   })
  
@@ -524,7 +515,7 @@ $('.btn-meal-random').on('click', function(e){
   var viewBtn = $(this)
 
   modalView.style.display = "block";
-  console.log(viewBtn)
+  
   
   var itemId = viewBtn.attr('data-id')
   var btnType = viewBtn.attr('data-type')
@@ -536,7 +527,7 @@ $.ajax({
   url: queryUrl,
   method: 'GET'
 }).then(function(view){
-  console.log(view)
+  
   var result = view.meals[0]
   var viewDiv = $("<div class='uk-card-media-left uk-cover-container'></div>")
   var newTitle = $('<h3 class="uk-card-title">'+ result.strMeal + '</h3>')
@@ -579,13 +570,13 @@ $.ajax({
   // Button to favorite meal
   $('.uk-icon').on('click', function(){
     var favBtn = $(this)
-    console.log(favBtn)
+    
     favBtn.attr('style', 'color: red')
     var favId = favBtn.attr('data-id')
     if(favoriteMeals.indexOf(favId) == '-1'){
     favoriteMeals.push(favId)
     localStorage.setItem('fav meals', JSON.stringify(favoriteMeals))
-    console.log(favoriteMeals)
+    
     }
 })
 
@@ -617,7 +608,7 @@ $('.btn-drink').on('click', function(e){
     url: queryUrl,
     method: "GET"
    }).then(function(response){
-    console.log(response)
+   
     
 
     if(response.drinks == null){
@@ -628,7 +619,7 @@ $('.btn-drink').on('click', function(e){
       var drinkTitle = $('<h1>'+ (response.drinks.length) + ' Results for ' + drink + '</h1>')
       $('.titles').append(drinkTitle)
       //Loop through results
-      for(var i = 0; i < 21; i++){
+      for(var i = 0; i < response.drinks.length; i++){
       
       var newDiv = $("<div class='uk-card uk-card-default uk-card-body'></div>")
       var newTitle = $('<button class="mainTitle uk-button uk-button-default" data-type="drinkView">'+ response.drinks[i].strDrink + '</button>')
@@ -651,14 +642,14 @@ $('.btn-drink').on('click', function(e){
    
     }}
     
+    //favorite button
     $('.uk-icon').on('click', function(){
-   
-        favIcon.attr('style', 'color: red')
-        var favId = favIcon.attr('data-id')
-        if(favoriteDrinks.indexOf(favId) == '-1'){
-        favoriteDrinks.push(favId)
-        localStorage.setItem('fav drinks', JSON.stringify(favoriteDrinks))
-        console.log(favoriteDrinks)
+      var favBtn = $(this)
+      favBtn.attr('style', 'color: red')
+      var favId = favBtn.attr('data-id')
+      if(favoriteDrinks.indexOf(favId) == '-1'){
+      favoriteDrinks.push(favId)
+      localStorage.setItem('fav drinks', JSON.stringify(favoriteDrinks))
         }
     }) 
 
@@ -669,7 +660,7 @@ $('.btn-drink').on('click', function(e){
   var viewBtn = $(this)
 
   modalView.style.display = "block";
-  console.log(viewBtn)
+  
   
   var itemId = viewBtn.attr('data-id')
   var btnType = viewBtn.attr('data-type')
@@ -681,7 +672,7 @@ $.ajax({
   url: queryUrl,
   method: 'GET'
 }).then(function(view){
-  console.log(view)
+  
   var result = view.drinks[0]
   var viewDiv = $("<div class='uk-card-media-left uk-cover-container'></div>")
   var newTitle = $('<h3 class="uk-card-title">'+ result.strDrink + '</h3>')
@@ -723,13 +714,13 @@ $.ajax({
   // Button to favorite drink
   $('.uk-icon').on('click', function(){
     var favBtn = $(this)
-    console.log(favBtn)
+    
     favBtn.attr('style', 'color: red')
     var favId = favBtn.attr('data-id')
     if(favoriteDrinks.indexOf(favId) == '-1'){
     favoriteDrinks.push(favId)
     localStorage.setItem('fav drinks', JSON.stringify(favoriteDrinks))
-    console.log(favoriteDrinks)
+    
     }
 })
 
@@ -757,7 +748,7 @@ $.ajax({
     url: queryUrl,
     method: "GET"
    }).then(function(response){
-    console.log(response)
+    
     var drinkTitle = $('<h1>Variety is the spice of life. Enjoy...</h1>')
     $('.titles').append(drinkTitle)  
       var newDiv = $("<div class='uk-card uk-card-default uk-card-body random'></div>")
@@ -781,13 +772,12 @@ $.ajax({
     //Button to favorite the drink
     $('.uk-icon').on('click', function(){
       var favBtn = $(this)
-      console.log(favBtn)
+      
       favBtn.attr('style', 'color: red')
       var favId = favBtn.attr('data-id')
         if(favoriteDrinks.indexOf(favId) == '-1'){
         favoriteDrinks.push(favId)
         localStorage.setItem('fav drinks', JSON.stringify(favoriteDrinks))
-        console.log(favoriteDrinks)
         }
     })
     
@@ -798,7 +788,7 @@ $.ajax({
     var viewBtn = $(this)
   
     modalView.style.display = "block";
-    console.log(viewBtn)
+    
     
     var itemId = viewBtn.attr('data-id')
     var btnType = viewBtn.attr('data-type')
@@ -810,7 +800,7 @@ $.ajax({
     url: queryUrl,
     method: 'GET'
   }).then(function(view){
-    console.log(view)
+    
     var result = view.drinks[0]
     var viewDiv = $("<div class='uk-card-media-left uk-cover-container'></div>")
     var newTitle = $('<h3 class="uk-card-title">'+ result.strDrink + '</h3>')
@@ -853,13 +843,12 @@ $.ajax({
     // Button to favorite drink
     $('.uk-icon').on('click', function(){
       var favBtn = $(this)
-      console.log(favBtn)
+      
       favBtn.attr('style', 'color: red')
       var favId = favBtn.attr('data-id')
       if(favoriteDrinks.indexOf(favId) == '-1'){
       favoriteDrinks.push(favId)
       localStorage.setItem('fav drinks', JSON.stringify(favoriteDrinks))
-      console.log(favoriteDrinks)
       }
   })
   
@@ -890,7 +879,7 @@ $.ajax({
   method: "GET",
   headers: {'user-key': '8b3fec82b5d8fb68a801540078df89dc'}
  }).then(function(loc){
-   console.log(loc)
+   
   var entityId = loc.location_suggestions[0].entity_id
   var entityType = loc.location_suggestions[0].entity_type
   if(entityId == null){
@@ -899,14 +888,14 @@ $.ajax({
   } else {
 
 var queryUrl = 'https://developers.zomato.com/api/v2.1/search?entity_id='+ entityId +'&entity_type='+ entityType +'&q='+ restaurantKeyword
-console.log(queryUrl)
+
 
 $.ajax({
  url: queryUrl,
  method: "GET",
  headers: {'user-key': '8b3fec82b5d8fb68a801540078df89dc'}
 }).then(function(response){
- console.log(response)
+ 
     
  
 
@@ -929,7 +918,7 @@ $.ajax({
       favIcon.attr('style', 'display: block')
       favIcon.attr('class', 'uk-button uk-button-default uk-icon')
       if (favoriteRestaurants.includes(restaurantId) == true){
-        console.log(restaurantId)
+        
         favIcon.attr('style', 'color: red')
       }
       newDiv.append(newTitle)
@@ -950,13 +939,12 @@ $.ajax({
 // Button to favorite restaurant
 $('.uk-icon').on('click', function(){
   var favBtn = $(this)
-  console.log(favBtn)
   favBtn.attr('style', 'color: red')
   var favId = favBtn.attr('data-id')
   if(favoriteRestaurants.indexOf(favId) == '-1'){
   favoriteRestaurants.push(favId)
   localStorage.setItem('fav restaurants', JSON.stringify(favoriteRestaurants))
-  console.log(favoriteRestaurants)
+  
   }
 })
  
